@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blacklight</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <div class="brand">
+          <span class="logo-dot"></span>
+          <span class="brand-name">BLACKLIGHT</span>
+          <span class="brand-sub">privacy transparency · 100% local</span>
+        </div>
+        <button id="run-btn">▶ RUN SCAN</button>
+      </header>
+
+      <div id="status" class="status">
+        Ready. Click "Run Scan" to inspect what Windows is quietly recording on this PC.
+      </div>
+
+      <div id="panels" class="panels"></div>
+
+      <footer class="foot">
+        Nothing leaves this machine. Blacklight reads local Windows records only.
+      </footer>
+    </div>
+  </body>
+</html>
