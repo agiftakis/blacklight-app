@@ -6,11 +6,17 @@ artifact readers and returns ONE combined JSON document describing every
 artifact - exactly what a Tauri "sidecar" (a helper process the app launches
 and talks to) needs: one process, one JSON reply.
 
-Usage:
-  python blacklight_engine.py            -> JSON (default; what the app calls)
-  python blacklight_engine.py --pretty   -> human-readable summary
-  python blacklight_engine.py --reveal   -> include the REAL GDID (de-anonymizing;
-                                            the app must gate this behind a click)
+Once frozen into a single .exe, this ONE file serves BOTH jobs, chosen by a
+command word passed as the first argument:
+
+  blacklight_engine.py scan               -> combined artifact JSON (default)
+  blacklight_engine.py scan --pretty      -> human-readable summary
+  blacklight_engine.py scan --reveal      -> include the REAL GDID (de-anonymizing)
+  blacklight_engine.py clear-userassist            -> backup + clear, one JSON result
+  blacklight_engine.py clear-userassist --dry-run  -> preview only, change nothing
+
+Backward compatible: if NO command word is given, it defaults to `scan`
+(so `blacklight_engine.py --pretty` still works for standalone testing).
 
 Sensitive values (GDID) are MASKED unless --reveal is passed.
 Pure Python standard library.
@@ -129,14 +135,59 @@ def print_pretty(data):
     print("=" * 70 + "\n")
 
 
-def main():
-    reveal = "--reveal" in sys.argv
-    pretty = "--pretty" in sys.argv
+def run_scan(argv):
+    """The scan job (formerly main()). Reads flags out of argv."""
+    reveal = "--reveal" in argv
+    pretty = "--pretty" in argv
     data = collect(reveal=reveal)
     if pretty:
         print_pretty(data)
     else:
         print(json.dumps(data, indent=2))
+    return 0
+
+
+def run_clear_userassist(argv):
+    """The UserAssist clear job. Delegates to userassist_clear's proven JSON
+    helpers so the .exe emits EXACTLY the same JSON the app already expects."""
+    # Imported here (not at top) so a plain `scan` never needs the clear module.
+    from userassist_clear import _preview_json, _clear_json
+    if "--dry-run" in argv:
+        return _preview_json()   # preview only, changes nothing
+    return _clear_json()         # backup first, then clear
+
+
+# Command word -> handler. First non-flag argument selects the job.
+COMMANDS = {
+    "scan": run_scan,
+    "clear-userassist": run_clear_userassist,
+}
+
+
+def main():
+    argv = sys.argv[1:]
+
+    # First argument that isn't a --flag is the command word.
+    command = "scan"  # default keeps `blacklight_engine.py --pretty` working
+    rest = []
+    for i, tok in enumerate(argv):
+        if not tok.startswith("-"):
+            command = tok
+            rest = argv[:i] + argv[i + 1:]  # everything except the command word
+            break
+    else:
+        rest = argv  # no command word found -> all tokens are flags for `scan`
+
+    handler = COMMANDS.get(command)
+    if handler is None:
+        print(json.dumps({
+            "ok": False,
+            "error": "unknown_command",
+            "message": f"Unknown command '{command}'. Valid: {', '.join(COMMANDS)}."
+        }))
+        sys.exit(2)
+
+    sys.exit(handler(rest))
 
 
 if __name__ == "__main__":

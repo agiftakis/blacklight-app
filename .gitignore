@@ -39,9 +39,10 @@ engine/backups/
 *.reg
 
 # ---- Tauri sidecar binary (the frozen Python engine .exe) ----
-# By default we DO commit it, so the repo builds without PyInstaller installed.
-# Prefer to rebuild it each time instead? Uncomment the next line:
-# shell/src-tauri/binaries/
+# IGNORED: this .exe is a rebuildable PyInstaller artifact. Regenerate it any
+# time from engine\ (pyinstaller --onefile ...), then copy into binaries\.
+# Keeps the repo lean and avoids committing a 6 MB binary.
+shell/src-tauri/binaries/
 
 # ---- OS / editor cruft ----
 .DS_Store

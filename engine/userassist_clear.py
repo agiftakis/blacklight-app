@@ -38,7 +38,26 @@ from userassist_reader import read_userassist, USERASSIST_PATH, GUIDS
 
 # Full key path in the format reg.exe expects (HKCU\...)
 HKCU_EXPORT_ROOT = r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\UserAssist"
-BACKUP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "backups")
+
+
+def _backup_root():
+    """Where safety-net .reg backups are written.
+
+    FROZEN (shipped .exe): %LOCALAPPDATA%\\Blacklight\\backups - a real,
+        always-user-writable, persistent folder. We must NOT use the folder
+        next to the program here: a one-file PyInstaller .exe unpacks into a
+        temporary directory that Windows deletes on exit, so a backup written
+        "next to __file__" would silently vanish - breaking the restore promise.
+    DEV (plain .py): engine\\backups next to this script (unchanged behavior,
+        stays git-ignored, keeps the sandbox-proven round-trip identical).
+    """
+    if getattr(sys, "frozen", False):
+        base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
+        return os.path.join(base, "Blacklight", "backups")
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "backups")
+
+
+BACKUP_DIR = _backup_root()
 
 
 def backup_userassist():

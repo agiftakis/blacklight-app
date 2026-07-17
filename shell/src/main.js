@@ -132,8 +132,8 @@ function openClearDialog(count) {
   const body = el("div", "modal-body");
   body.innerHTML =
     `This deletes <b>${esc(count)}</b> recorded app-launch entries — your own real data only.<br><br>` +
-    `<b style="color:var(--green)">A full backup is saved first</b> (a .reg file in the engine's <code>backups\\</code> folder). ` +
-    `To undo, double-click that file. Nothing is faked, and nothing leaves this machine.<br><br>` +
+    `<b style="color:var(--green)">A full backup is saved first</b> (a .reg restore file in Blacklight's backups folder). ` +
+    `The exact backup location is shown here the moment it's saved. To undo, double-click that file. Nothing is faked, and nothing leaves this machine.<br><br>` +
     `<span style="color:var(--dim)">Note: a cleared history can look conspicuously empty — this is privacy hygiene, not "forensic invisibility".</span>`;
   box.appendChild(body);
 
@@ -186,7 +186,7 @@ function openClearDialog(count) {
         result.className = "modal-result ok";
         result.innerHTML =
           `✅ Cleared ${esc(res.cleared)} entries.<br>` +
-          `<span class="path">Backup: ${esc(res.backup_path)}</span>`;
+          `<span class="path">Backup saved to: ${esc(res.backup_path)}</span>`;
         // Re-scan so the count visibly drops.
         setTimeout(() => { close(); runScan(); }, 1600);
       } else {
@@ -209,7 +209,7 @@ function errorPanel(err) {
   p.appendChild(el("div", "warn", esc(String(err))));
   p.appendChild(
     el("div", "note",
-      'If this mentions "Could not launch python", your PC uses the "py" launcher instead — tell Claude to swap it.')
+      'If this mentions launching the engine, something went wrong with the bundled scanner — please report it.')
   );
   return p;
 }
