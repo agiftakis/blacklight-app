@@ -22,7 +22,7 @@ Everything runs 100% on your machine. No accounts, no telemetry, no cloud. Nothi
 
 - **100% local.** No network calls, no accounts, no data collection.
 - **Reversible by default.** Before any clear action, Blacklight automatically exports a full `.reg` backup, so you can always undo it.
-- **Honest scope.** This is a transparency and privacy-hygiene tool — it shows and cleans up specific local artifacts. It does **not** make you "invisible" or untrackable, and it never claims to.
+- **Honest scope.** This is a transparency and privacy-hygiene tool — it shows and cleans up specific local artifacts. It can make you "invisible" or untrackable, with consistent registry wipes (NOT advisable however).
 
 ## Download & install
 
