@@ -82,7 +82,7 @@ The installer is written to `shell/src-tauri/target/release/bundle/`.
 
 ## Contributing
 
-Feedback, bug reports, and ideas for new artifacts are very welcome — open an [issue](https://github.com/agiftakis/blacklight-app/issues). This is an early solo release, so real-world testing helps a lot.
+Feedback, bug reports, and ideas for new artifacts are very welcome — open an [issue](https://github.com/agiftakis/blacklight-app/issues). This is an early PeachTree Apps release, so real-world testing helps a lot.
 
 ## License
 
